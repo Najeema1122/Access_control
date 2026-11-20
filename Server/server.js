@@ -21,7 +21,22 @@ app.use((_req, res, next) => {
   next();
 });
 app.use(express.json({ limit: "64kb" }));
+// Concurrent requests share one database startup on each server instance.
+let databaseReady;
+const ensureDatabase = () => {
+  if (!databaseReady) {
+    databaseReady = connectDatabase().catch((error) => {
+      databaseReady = undefined;
+      throw error;
+    });
+  }
+  return databaseReady;
+};
 const api = express.Router();
+api.use(async (_req, _res, next) => {
+  await ensureDatabase();
+  next();
+});
 api.get("/health", (_req, res) => res.json({ status: "ok" }));
 api.use("/roles", roleRoutes);
 api.use("/permissions", permissionRoutes);
@@ -53,7 +68,7 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ message: "The request could not be completed." });
 });
 const startServer = async () => {
-  await connectDatabase();
+  await ensureDatabase();
   const port = Number(process.env.PORT || 5000);
   const server = app.listen(port, "0.0.0.0", () =>
     console.log("Access Control listening on port " + port),
@@ -63,12 +78,16 @@ const startServer = async () => {
     process.exit(1);
   });
 };
-startServer().catch((error) => {
-  console.error(
-    "Startup failed:",
-    error.name,
-    error.code || "",
-    error.httpStatus ? error.message : "Check database access and server configuration.",
-  );
-  process.exit(1);
-});
+module.exports = app;
+
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error(
+      "Startup failed:",
+      error.name,
+      error.code || "",
+      error.httpStatus ? error.message : "Check database access and server configuration.",
+    );
+    process.exit(1);
+  });
+}
