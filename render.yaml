@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: access-desk
+    runtime: node
+    plan: free
+    buildCommand: npm ci --prefix Server && npm ci --include=dev --prefix Client && npm run build --prefix Client
+    startCommand: node Server/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 24.13.0
+      - key: MONGODB_URI
+        sync: false
+      - key: SYSTEM_ADMIN_ROLE_ID
+        sync: false
+      - key: DEMO_ADMIN_TOKEN
+        generateValue: true

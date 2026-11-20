@@ -1,0 +1,14 @@
+const express = require("express");
+const roles = require("../controllers/roleController");
+const loadAdministrator = require("../middleware/loadAdministrator");
+const requireAdmin = require("../middleware/requireAdmin");
+const router = express.Router();
+router.get("/", roles.getRoles);
+router.get("/:id", roles.getRoleById);
+router.use(loadAdministrator, requireAdmin);
+router.post("/", roles.createRole);
+router.put("/:id", roles.updateRole);
+router.post("/:id/clone", roles.cloneRole);
+router.patch("/:id/status", roles.setStatus);
+router.put("/:id/permissions", roles.setPermissions);
+module.exports = router;

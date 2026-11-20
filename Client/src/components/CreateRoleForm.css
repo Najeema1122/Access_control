@@ -1,0 +1,22 @@
+.create-role {
+  margin: 2rem auto;
+  padding: 1.25rem;
+  max-width: 48rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.create-role form { display: grid; gap: 0.5rem; }
+.create-role fieldset { display: grid; gap: 0.5rem; min-width: 0; margin: 0; border: 0; padding: 0; }
+.create-role label { margin-top: 0.75rem; font-weight: 600; }
+.create-role input[type="password"], .create-role input[name="roleName"], .create-role select,
+.create-role button { font: inherit; padding: 0.45rem 0.75rem; }
+.create-role button { justify-self: start; cursor: pointer; }
+.matrix-scroll { margin: 1rem 0; overflow-x: auto; }
+.matrix-scroll table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.matrix-scroll caption { text-align: left; font-weight: 600; margin-bottom: 0.5rem; }
+.matrix-scroll th, .matrix-scroll td { padding: 0.5rem; border-bottom: 1px solid var(--border); }
+.matrix-scroll td, .matrix-scroll th[scope="col"] { text-align: center; }
+.matrix-scroll th:first-child { text-align: left; }
+.role-preview { margin-top: 1rem; border-top: 1px solid var(--border); }
